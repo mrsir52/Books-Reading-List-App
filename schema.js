@@ -4,7 +4,9 @@ const{
     GraphQLObjectType,
     GraphQLString,
     GraphQLInt,
-    GraphQLSchema//helper from GQL library, take a root query and returns GQL Schema instance
+    GraphQLSchema,//helper from GQL library, take a root query and returns GQL Schema instance
+    GraphQLList,
+    GraphQLUser
 } = graphql;
 
 const BookType = new GraphQLObjectType({
@@ -12,11 +14,18 @@ const BookType = new GraphQLObjectType({
     fields: {
         id: { type: GraphQLString },
         name: { type: GraphQLString },
-        description: { type: GraphQLString }
+        description: { type: GraphQLString },
+        users: {
+            type: new GraphQLList (UserType),//Wrap UserType with GQL List
+            resolve(parentValue, args) {
+                return axios.get(`http://localhost:3000/books/${parentValue.id}/users`)
+                    .then(res => res.data);
+            }
+        }
     }
-});//BookType, not a CompanyType
+});
 
-const UserType = new GraphQLObjectType({
+var UserType = new GraphQLObjectType({
     name: 'User',
     fields: {
         id: { type: GraphQLString },
@@ -25,7 +34,7 @@ const UserType = new GraphQLObjectType({
         book: {
             type: BookType,
             resolve(parentValue, args) {
-                return axios.get(`http:localhost:3000/companies/${parentValue.bookId}`)//axios.get instead of console.log
+                return axios.get(`http:localhost:3000/books/${parentValue.bookId}`)//axios.get instead of console.log
                     .then(res => res.data);
             }
         }
