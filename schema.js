@@ -25,7 +25,8 @@ const UserType = new GraphQLObjectType({
         book: {
             type: BookType,
             resolve(parentValue, args) {
-                console.log(parentValue, args);
+                return axios.get(`http:localhost:3000/companies/${parentValue.bookId}`)//axios.get instead of console.log
+                    .then(res => res.data);
             }
         }
     }
@@ -40,6 +41,14 @@ const RootQuery = new GraphQLObjectType({
             resolve(parentValue, args) {
                 return axios.get(`http://localhost:3000/users/${args.id}`)
                     .then(resp => resp.data);//responce coming back from axios. to make axios works with graphql
+            }
+        },
+        book: {
+            type: BookType, 
+            args: { id: { type: GraphQLString } },
+            resolve(parentValue, args) {
+                return axios.get(`http://localhost:3000/books/${args.id}`)
+                    .then(resp => resp.data);
             }
         }
     }
