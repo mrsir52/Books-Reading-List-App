@@ -7,7 +7,14 @@ const{
     GraphQLSchema//helper from GQL library, take a root query and returns GQL Schema instance
 } = graphql;
 
-
+const BookType = new GraphQLObjectType({
+    name: 'Book',
+    fields: {
+        id: { type: GraphQLString },
+        name: { type: GraphQLString },
+        description: { type: GraphQLString }
+    }
+});//BookType, not a CompanyType
 
 const UserType = new GraphQLObjectType({
     name: 'User',
